@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Task Creator - Precise Rubrics</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Left Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3>Precise Rubrics</h3>
+            </div>
+            
+            <div class="nav-steps">
+                <div class="nav-step active" data-step="1">
+                    <div class="nav-step-header" onclick="toggleNavStep(1)">
+                        <span class="nav-step-title">Create Prompt</span>
+                        <span class="nav-step-score" id="nav-score-1">-</span>
+                    </div>
+                    <div class="nav-step-content" id="nav-content-1">
+                        <div class="quality-metrics">
+                            <div class="metric-group">
+                                <div class="metric-item" data-metric="clarity">
+                                    <div class="metric-header">
+                                        <span class="metric-name">Clarity</span>
+                                        <span class="metric-score">-</span>
+                                    </div>
+                                    <div class="metric-criteria">
+                                        <div class="criterion clickable" data-score="100" data-level="excellent">The prompt contains clear, direct and explicit instructions free from ambiguous or undefined terms, expressed using natural language.</div>
+                                        <div class="criterion clickable" data-score="80" data-level="good">The prompt contains slightly stilted or awkward language; the user's intent is still clear as the instructions are still direct, explicit, unambiguous, and free from undefined terms.</div>
+                                        <div class="criterion clickable" data-score="0" data-level="poor">The prompt contains undefined or ambiguous terms, requests or expectations or poor enough language to confuse the user's intent.</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="metric-item" data-metric="appropriateness">
+                                    <div class="metric-header">
+                                        <span class="metric-name">Topic Appropriateness</span>
+                                        <span class="metric-score">-</span>
+                                    </div>
+                                    <div class="metric-criteria">
+                                        <div class="criterion clickable" data-score="100" data-level="excellent">The prompt reflects a real-world scenario and can be answered without niche STEM or programming knowledge.</div>
+                                        <div class="criterion clickable" data-score="80" data-level="good">While the scenario outlined in the prompt is neither hypothetical nor reliant on niche STEM or programming knowledge, it is unusual and doesn't feel completely realistic.</div>
+                                        <div class="criterion clickable" data-score="0" data-level="poor">The prompt requires niche STEM or programming knowledge to be answered or reflects a hypothetical, unrealistic scenario, such as a logic puzzle.</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="metric-item" data-metric="originality">
+                                    <div class="metric-header">
+                                        <span class="metric-name">Originality</span>
+                                        <span class="metric-score">-</span>
+                                    </div>
+                                    <div class="metric-criteria">
+                                        <div class="criterion clickable" data-score="100" data-level="excellent">The scenario and language used in the prompt are original.</div>
+                                        <div class="criterion clickable" data-score="0" data-level="poor">The scenario or language used in the prompt are clearly copied from a source.</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="metric-item" data-metric="objectivity">
+                                    <div class="metric-header">
+                                        <span class="metric-name">Objectivity</span>
+                                        <span class="metric-score">-</span>
+                                    </div>
+                                    <div class="metric-criteria">
+                                        <div class="criterion clickable" data-score="100" data-level="excellent">The prompt requires an objective, fair, and unbiased answer. Furthermore, each instruction should allow for a clear Yes/No evaluation.</div>
+                                        <div class="criterion clickable" data-score="0" data-level="poor">The prompt requires a subjective or biased answer and/or an instruction does not allow for a clear yes/no evaluation.</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="metric-item" data-metric="complexity">
+                                    <div class="metric-header">
+                                        <span class="metric-name">Complexity</span>
+                                        <span class="metric-score">-</span>
+                                    </div>
+                                    <div class="metric-criteria">
+                                        <div class="criterion clickable" data-score="100" data-level="excellent">The prompt requires multi-part or multi-step reasoning and is complex enough to elicit a pass rate of ≤65% across four responses.</div>
+                                        <div class="criterion clickable" data-score="0" data-level="poor">The prompt does not require multi-part or multi-step reasoning or elicits a pass rate of >65% across four responses.</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="metric-item" data-metric="context">
+                                    <div class="metric-header">
+                                        <span class="metric-name">Context</span>
+                                        <span class="metric-score">-</span>
+                                    </div>
+                                    <div class="metric-criteria">
+                                        <div class="criterion clickable" data-score="100" data-level="excellent">The prompt can be answered without a web search; all relevant context e.g. supporting data is provided in acceptable formats such as excerpts, charts, or images.</div>
+                                        <div class="criterion clickable" data-score="0" data-level="poor">The prompt requires additional context to be answered or contains context in an unacceptable format such as web links or embedded codes and formulas.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="nav-step" data-step="2">
+                    <div class="nav-step-header" onclick="toggleNavStep(2)">
+                        <span class="nav-step-title">Evaluate Model Answers</span>
+                        <span class="nav-step-score" id="nav-score-2">-</span>
+                    </div>
+                    <div class="nav-step-content" id="nav-content-2" style="display: none;">
+                        <div class="quality-metrics">
+                            <div class="metric-group">
+                                <div class="metric-item" data-metric="rubric-agreement">
+                                    <div class="metric-header">
+                                        <span class="metric-name">Rubric Agreement</span>
+                                        <span class="metric-score">-</span>
+                                    </div>
+                                    <div class="metric-criteria">
+                                        <div class="criterion clickable" data-score="100" data-level="excellent">Every prompt instruction is reflected in the rubric and each rubric element is unique.</div>
+                                        <div class="criterion clickable" data-score="0" data-level="poor">One or more prompt instructions are not reflected in the rubric and/or the rubric contains duplicate criteria.</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="metric-item" data-metric="rubric-formatting">
+                                    <div class="metric-header">
+                                        <span class="metric-name">Rubric Formatting</span>
+                                        <span class="metric-score">-</span>
+                                    </div>
+                                    <div class="metric-criteria">
+                                        <div class="criterion clickable" data-score="100" data-level="excellent">The rubric contains 3 to 20 elements grouped under descriptive headers.</div>
+                                        <div class="criterion clickable" data-score="0" data-level="poor">The rubric contains too few or too many elements or ungrouped elements without descriptive headers.</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="metric-item" data-metric="objective-scoring">
+                                    <div class="metric-header">
+                                        <span class="metric-name">Objective Scoring</span>
+                                        <span class="metric-score">-</span>
+                                    </div>
+                                    <div class="metric-criteria">
+                                        <div class="criterion clickable" data-score="100" data-level="excellent">Requirements within criteria must be outlined using specific thresholds and be objectively gradable with clear Yes/No outcomes. Each rubric element scores +1 if requirements are met and 0 if they are not.</div>
+                                        <div class="criterion clickable" data-score="0" data-level="poor">Requirements are not outlined specifically enough to allow for objective grading, or allow for outcomes beyond Yes/No. Rubric elements are not scored as +1 if requirements are met and 0 if they are not.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="nav-step" data-step="3">
+                    <div class="nav-step-header" onclick="toggleNavStep(3)">
+                        <span class="nav-step-title">Evaluate Answers</span>
+                        <span class="nav-step-score" id="nav-score-3">-</span>
+                    </div>
+                    <div class="nav-step-content" id="nav-content-3" style="display: none;">
+                        <div class="quality-metrics">
+                            <div class="metric-group">
+                                <div class="metric-item" data-metric="grading-completeness">
+                                    <div class="metric-header">
+                                        <span class="metric-name">Grading Completeness</span>
+                                        <span class="metric-score">-</span>
+                                    </div>
+                                    <div class="metric-criteria">
+                                        <div class="criterion clickable" data-score="100" data-level="excellent">All criteria have been manually evaluated and any failures are explained factually and concisely.</div>
+                                        <div class="criterion clickable" data-score="0" data-level="poor">One or more criteria have not been evaluated, one or more failures have not been explained, or the grading includes verbose, inaccurate, or unspecific failure explanations.</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="metric-item" data-metric="target-difficulty">
+                                    <div class="metric-header">
+                                        <span class="metric-name">Target Difficulty</span>
+                                        <span class="metric-score">-</span>
+                                    </div>
+                                    <div class="metric-criteria">
+                                        <div class="criterion clickable" data-score="100" data-level="excellent">All model responses scored below 30% with appropriate challenge level and consistent scoring methodology.</div>
+                                        <div class="criterion clickable" data-score="0" data-level="poor">Task too easy (>30% success rate) or inconsistent difficulty assessment across responses.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <!-- Step 1: Creating Prompt -->
+            <section id="step-1" class="step-content active">
+                <h2><i class="fas fa-edit"></i> Create a challenging task prompt using the generator or write your own</h2>
+                <p><strong>Expected result:</strong> A detailed prompt with constraints that will be difficult for AI models to complete perfectly</p>
+                
+                <!-- Prompt Draft Generator Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Generate a draft prompt by selecting context and constraints below</h3>
+                    </div>
+                    <div class="card-body">
+                    
+                    <div class="generator-grid">
+                        <div class="form-group">
+                            <label for="domain-category">Domain Category</label>
+                            <select id="domain-category">
+                                <option value="">Choose category</option>
+                                <option value="planning">Planning and Organization</option>
+                                <option value="calculation">Calculations and Mathematics</option>
+                                <option value="text-analysis">Text Analysis</option>
+                                <option value="logic">Logical Reasoning</option>
+                                <option value="creative">Creative Tasks</option>
+                                <option value="practical">Practical Tasks</option>
+                                <option value="research">Research and Investigation</option>
+                                <option value="technical">Technical Problem Solving</option>
+                                <option value="business">Business Strategy</option>
+                                <option value="education">Educational Content</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="task-type">Task Type</label>
+                            <select id="task-type">
+                                <option value="">Choose type</option>
+                                <option value="planning">Event Planning</option>
+                                <option value="analysis">Data Analysis</option>
+                                <option value="creative">Creative Assignment</option>
+                                <option value="calculation">Calculation Task</option>
+                                <option value="comparison">Option Comparison</option>
+                                <option value="writing">Writing Task</option>
+                                <option value="problem-solving">Problem Solving</option>
+                                <option value="evaluation">Evaluation Task</option>
+                                <option value="design">Design Task</option>
+                                <option value="synthesis">Information Synthesis</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="complexity-level">Complexity Level</label>
+                            <select id="complexity-level">
+                                <option value="medium">Medium</option>
+                                <option value="hard">High</option>
+                                <option value="expert">Expert</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="requirements-count">Number of Requirements</label>
+                            <select id="requirements-count">
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Constraints Section -->
+                    <h4>Select constraints to make the task more challenging for AI models</h4>
+                    
+                    <div class="constraints-grid">
+                        <div class="constraint-category">
+                            <h5><i class="fas fa-sitemap"></i> Structure</h5>
+                            <div class="constraint-options">
+                                <label class="constraint-option">
+                                    <input type="checkbox" name="constraints" value="structure-intro-body-conclusion">
+                                    <span>Clear structure (intro → body → conclusion)</span>
+                                </label>
+                                <label class="constraint-option">
+                                    <input type="checkbox" name="constraints" value="structure-specific-sections">
+                                    <span>Specific sections must be included</span>
+                                </label>
+                                <label class="constraint-option">
+                                    <input type="checkbox" name="constraints" value="structure-numbered-points">
+                                    <span>Numbered points or steps</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="constraint-category">
+                            <h5><i class="fas fa-align-left"></i> Format</h5>
+                            <div class="constraint-options">
+                                <label class="constraint-option">
+                                    <input type="checkbox" name="constraints" value="format-bullet-list">
+                                    <span>Written as bullet list</span>
+                                </label>
+                                <label class="constraint-option">
+                                    <input type="checkbox" name="constraints" value="format-table">
+                                    <span>Written as table</span>
+                                </label>
+                                <label class="constraint-option">
+                                    <input type="checkbox" name="constraints" value="format-paragraph">
+                                    <span>One idea per paragraph</span>
+                                </label>
+                                <label class="constraint-option">
+                                    <input type="checkbox" name="constraints" value="format-professional">
+                                    <span>Professional business format</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="constraint-category">
+                            <h5><i class="fas fa-ruler"></i> Length</h5>
+                            <div class="constraint-options">
+                                <label class="constraint-option">
+                                    <input type="checkbox" name="constraints" value="length-word-limit">
+                                    <span>Word or character limit</span>
+                                </label>
+                                <label class="constraint-option">
+                                    <input type="checkbox" name="constraints" value="length-sentence-count">
+                                    <span>Specific number of sentences</span>
+                                </label>
+                                <label class="constraint-option">
+                                    <input type="checkbox" name="constraints" value="length-page-limit">
+                                    <span>Page length restriction</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="constraint-category">
+                            <h5><i class="fas fa-hashtag"></i> Content</h5>
+                            <div class="constraint-options">
+                                <label class="constraint-option">
+                                    <input type="checkbox" name="constraints" value="content-examples">
+                                    <span>Exact number of examples</span>
+                                </label>
+                                <label class="constraint-option">
+                                    <input type="checkbox" name="constraints" value="content-citations">
+                                    <span>Must include citations</span>
+                                </label>
+                                <label class="constraint-option">
+                                    <input type="checkbox" name="constraints" value="content-no-repetition">
+                                    <span>No repeated information</span>
+                                </label>
+                                <label class="constraint-option">
+                                    <input type="checkbox" name="constraints" value="content-specific-keywords">
+                                    <span>Must use specific keywords</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                        <div class="generator-actions">
+                            <button type="button" id="generate-prompt-btn" class="btn btn-primary">
+                                <i class="fas fa-magic"></i> Generate Prompt Draft
+                            </button>
+                            <button type="button" id="clear-generator" class="btn btn-secondary">
+                                <i class="fas fa-refresh"></i> Clear Selections
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Prompt Text Editor Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Edit the generated prompt</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="prompt-editor-section">
+                            
+                            <div class="editor-toolbar">
+                                <button type="button" onclick="formatText('bold')"><i class="fas fa-bold"></i></button>
+                                <button type="button" onclick="formatText('italic')"><i class="fas fa-italic"></i></button>
+                                <button type="button" onclick="formatText('underline')"><i class="fas fa-underline"></i></button>
+                                <button type="button" onclick="formatText('insertUnorderedList')"><i class="fas fa-list-ul"></i></button>
+                                <button type="button" onclick="formatText('insertOrderedList')"><i class="fas fa-list-ol"></i></button>
+                            </div>
+
+                            <div id="prompt-text" class="rich-editor" contenteditable="true" placeholder="Write your prompt here... Minimum 50 characters required">
+                            </div>
+                        </div>
+
+                        <div class="step-actions">
+                            <button type="button" id="next-step-1" class="btn btn-primary">
+                                Generate 4 Model Responses <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 2: Evaluate Model Answers & Create Rubric -->
+            <section id="step-2" class="step-content">
+                <h2><i class="fas fa-robot"></i> Review AI model responses and provide detailed evaluations</h2>
+                <p><strong>Expected result:</strong> Written assessments that help identify why responses succeed or fail</p>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Model Responses and Evaluation</h3>
+                    </div>
+                    <div class="card-body">
+                        <!-- Response Tabs -->
+                        <div class="response-tabs">
+                            <button class="response-tab active" data-response="1">Response 1</button>
+                            <button class="response-tab" data-response="2">Response 2</button>
+                            <button class="response-tab" data-response="3">Response 3</button>
+                            <button class="response-tab" data-response="4">Response 4</button>
+                        </div>
+
+                        <!-- Response Content Areas -->
+                        <div class="response-content-area">
+                            <div class="response-content-item active" id="response-content-1">
+                                <div class="response-display" id="response-1">
+                                    <div class="loading">
+                                        <i class="fas fa-spinner fa-spin"></i> Generating response...
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="response-content-item" id="response-content-2">
+                                <div class="response-display" id="response-2">
+                                    <div class="loading">
+                                        <i class="fas fa-spinner fa-spin"></i> Generating response...
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="response-content-item" id="response-content-3">
+                                <div class="response-display" id="response-3">
+                                    <div class="loading">
+                                        <i class="fas fa-spinner fa-spin"></i> Generating response...
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="response-content-item" id="response-content-4">
+                                <div class="response-display" id="response-4">
+                                    <div class="loading">
+                                        <i class="fas fa-spinner fa-spin"></i> Generating response...
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Regenerate Button positioned at bottom right -->
+                            <div class="response-actions">
+                                <button type="button" id="regenerate-responses" class="btn btn-secondary">
+                                    <i class="fas fa-refresh"></i> Regenerate Responses
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Common Evaluation Section -->
+                        <div class="common-evaluation-section">
+                            <label for="common-evaluation">Write a list of errors that were encountered in the model's answers:</label>
+                            <textarea id="common-evaluation" class="common-evaluation-textarea" placeholder="List the common errors, weaknesses, and issues you identified across the model responses. This will help generate appropriate rubric criteria."></textarea>
+                            
+                            <!-- Generate Rubric Button positioned at bottom right -->
+                            <div class="evaluation-actions">
+                                <button type="button" id="generate-rubric" class="btn btn-primary">
+                                    <i class="fas fa-magic"></i> Generate Rubrics
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Rubric Section -->
+                        <div class="rubric-section" id="rubric-section" style="display: none;">
+                            <h3>Evaluation Rubric</h3>
+
+                            <div id="rubric-criteria" class="criteria-container">
+                                <!-- Criteria will be added dynamically -->
+                            </div>
+
+                            <!-- Add Rubric Button positioned after existing rubrics -->
+                            <div class="rubric-tools">
+                                <button type="button" id="add-criterion" class="btn btn-primary">
+                                    <i class="fas fa-plus"></i> Add Rubric
+                                </button>
+                            </div>
+
+                            <div class="rubric-summary">
+                                <div class="summary-stats">
+                                    <div class="stat-item">
+                                        <span class="stat-label">Total Criteria:</span>
+                                        <span id="total-criteria">0</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span class="stat-label">Total Requirements:</span>
+                                        <span id="total-requirements">0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="step-actions">
+                            <button type="button" id="prev-step-2" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Previous
+                            </button>
+                            <button type="button" id="next-step-2" class="btn btn-primary">
+                                Evaluate Answers <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 3: Evaluation -->
+            <section id="step-3" class="step-content">
+                <h2><i class="fas fa-chart-bar"></i> Score each response using your rubric criteria</h2>
+                <p><strong>Expected result:</strong> All responses scoring below 30% to ensure task difficulty</p>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Response Scoring and Validation</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="evaluation-tabs">
+                            <button class="eval-tab active" data-response="1">Response 1 <span class="score-badge" id="score-1">0%</span></button>
+                            <button class="eval-tab" data-response="2">Response 2 <span class="score-badge" id="score-2">0%</span></button>
+                            <button class="eval-tab" data-response="3">Response 3 <span class="score-badge" id="score-3">0%</span></button>
+                            <button class="eval-tab" data-response="4">Response 4 <span class="score-badge" id="score-4">0%</span></button>
+                        </div>
+
+                        <div class="evaluation-content">
+                            <div class="response-preview" id="eval-response-1">
+                                <!-- Response content will be displayed here -->
+                            </div>
+                            <div class="response-preview" id="eval-response-2" style="display: none;">
+                                <!-- Response content will be displayed here -->
+                            </div>
+                            <div class="response-preview" id="eval-response-3" style="display: none;">
+                                <!-- Response content will be displayed here -->
+                            </div>
+                            <div class="response-preview" id="eval-response-4" style="display: none;">
+                                <!-- Response content will be displayed here -->
+                            </div>
+
+                            <div class="evaluation-form" id="evaluation-form">
+                                <!-- Evaluation criteria will be populated here -->
+                            </div>
+                        </div>
+
+                        <div class="validation-results">
+                            <div class="target-validation">
+                                <h4>Target Validation</h4>
+                                <p>All responses must score below 30% to proceed</p>
+                                <div class="validation-status" id="validation-status">
+                                    <div class="validation-item">
+                                        <span>Response 1:</span>
+                                        <span class="validation-score" id="validation-1">0%</span>
+                                    </div>
+                                    <div class="validation-item">
+                                        <span>Response 2:</span>
+                                        <span class="validation-score" id="validation-2">0%</span>
+                                    </div>
+                                    <div class="validation-item">
+                                        <span>Response 3:</span>
+                                        <span class="validation-score" id="validation-3">0%</span>
+                                    </div>
+                                    <div class="validation-item">
+                                        <span>Response 4:</span>
+                                        <span class="validation-score" id="validation-4">0%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="step-actions">
+                            <button type="button" id="prev-step-3" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Previous
+                            </button>
+                            <button type="button" id="save-draft" class="btn btn-secondary">
+                                <i class="fas fa-save"></i> Save Draft
+                            </button>
+                            <button type="button" id="submit-task" class="btn btn-success">
+                                <i class="fas fa-check"></i> Submit Task
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification">
+        <div class="notification-content">
+            <span id="notification-text"></span>
+            <button id="notification-close">&times;</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
