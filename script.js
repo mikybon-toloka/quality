@@ -255,40 +255,40 @@ class TaskCreator {
         // Calculate scores for each step based on evaluated metrics
         for (let step = 1; step <= 3; step++) {
             const scoreElement = document.getElementById(`nav-score-${step}`);
-            if (scoreElement) {
-                if (step === this.currentStep) {
-                    // Show current step scores if any
-                    const stepMetrics = this.getMetricsForStep(step);
-                    const completedMetrics = stepMetrics.filter(metric => this.metricScores[metric] !== undefined);
-                    
-                    if (completedMetrics.length === 0) {
+            const navStep = document.querySelector(`.nav-step[data-step="${step}"]`);
+            
+            if (scoreElement && navStep) {
+                const stepMetrics = this.getMetricsForStep(step);
+                const completedMetrics = stepMetrics.filter(metric => this.metricScores[metric] !== undefined);
+                
+                // Remove previous step score classes
+                navStep.classList.remove('step-score-excellent', 'step-score-good', 'step-score-poor');
+                
+                if (completedMetrics.length === 0) {
+                    if (step === this.currentStep) {
                         scoreElement.textContent = 'Active';
-                        scoreElement.style.color = 'var(--primary)';
+                        scoreElement.style.color = '#333333';
                     } else {
-                        const avgScore = Math.round(
-                            completedMetrics.reduce((sum, metric) => sum + this.metricScores[metric], 0) / completedMetrics.length
-                        );
-                        scoreElement.textContent = `${avgScore}%`;
-                        scoreElement.style.color = this.getScoreColor(avgScore);
-                    }
-                } else if (step < this.currentStep) {
-                    // Calculate completed step scores
-                    const stepMetrics = this.getMetricsForStep(step);
-                    const completedMetrics = stepMetrics.filter(metric => this.metricScores[metric] !== undefined);
-                    
-                    if (completedMetrics.length === 0) {
                         scoreElement.textContent = '-';
                         scoreElement.style.color = 'var(--text-muted)';
-                    } else {
-                        const avgScore = Math.round(
-                            completedMetrics.reduce((sum, metric) => sum + this.metricScores[metric], 0) / completedMetrics.length
-                        );
-                        scoreElement.textContent = `${avgScore}%`;
-                        scoreElement.style.color = this.getScoreColor(avgScore);
                     }
                 } else {
-                    scoreElement.textContent = '-';
-                    scoreElement.style.color = 'var(--text-muted)';
+                    const avgScore = Math.round(
+                        completedMetrics.reduce((sum, metric) => sum + this.metricScores[metric], 0) / completedMetrics.length
+                    );
+                    scoreElement.textContent = `${avgScore}%`;
+                    
+                    // Add color class to nav step based on score
+                    if (avgScore > 85) {
+                        navStep.classList.add('step-score-excellent');
+                        scoreElement.style.color = '#28a745';
+                    } else if (avgScore >= 70) {
+                        navStep.classList.add('step-score-good');
+                        scoreElement.style.color = '#ffc107';
+                    } else {
+                        navStep.classList.add('step-score-poor');
+                        scoreElement.style.color = '#dc3545';
+                    }
                 }
             }
         }
@@ -975,10 +975,27 @@ Please provide a comprehensive response that addresses all requirements systemat
                 const scoreSpan = metricItem.querySelector('.metric-score');
                 if (scoreSpan) {
                     scoreSpan.textContent = score;
-                    scoreSpan.style.color = this.getScoreColor(score);
                 }
                 
-                // Mark as evaluated and hide criteria
+                // Remove previous score classes and add new one based on score
+                metricItem.classList.remove('score-excellent', 'score-good', 'score-poor', 'evaluated');
+                
+                // Remove any existing training link
+                const existingLink = metricItem.querySelector('.training-link-button');
+                if (existingLink) {
+                    existingLink.remove();
+                }
+                
+                if (score > 85) {
+                    metricItem.classList.add('score-excellent');
+                } else if (score >= 70) {
+                    metricItem.classList.add('score-good');
+                } else {
+                    metricItem.classList.add('score-poor');
+                    // Add training link for poor scores
+                    this.addTrainingLink(metricItem, metricName);
+                }
+                
                 metricItem.classList.add('evaluated');
                 
                 // Ensure criteria are hidden for evaluated metrics
@@ -1093,10 +1110,27 @@ Please provide a comprehensive response that addresses all requirements systemat
         const scoreSpan = metricItem.querySelector('.metric-score');
         if (scoreSpan) {
             scoreSpan.textContent = score;
-            scoreSpan.style.color = this.getScoreColor(score);
         }
         
-        // Mark metric as evaluated
+        // Remove previous score classes and add new one based on score
+        metricItem.classList.remove('score-excellent', 'score-good', 'score-poor', 'evaluated');
+        
+        // Remove any existing training link
+        const existingLink = metricItem.querySelector('.training-link-button');
+        if (existingLink) {
+            existingLink.remove();
+        }
+        
+        if (score > 85) {
+            metricItem.classList.add('score-excellent');
+        } else if (score >= 70) {
+            metricItem.classList.add('score-good');
+        } else {
+            metricItem.classList.add('score-poor');
+            // Add training link for poor scores
+            this.addTrainingLink(metricItem, metricName);
+        }
+        
         metricItem.classList.add('evaluated');
         
         // Hide criteria after selection
@@ -1124,6 +1158,41 @@ Please provide a comprehensive response that addresses all requirements systemat
         if (score > 85) return '#28a745'; // Green for >85
         if (score >= 70) return '#ffc107'; // Yellow for 70-84
         return '#dc3545'; // Red for <70
+    }
+    
+    addTrainingLink(metricItem, metricName) {
+        const trainingUrl = this.getTrainingUrl(metricName);
+        const linkElement = document.createElement('a');
+        linkElement.className = 'training-link-button';
+        linkElement.href = trainingUrl;
+        linkElement.target = '_blank';
+        linkElement.innerHTML = `
+            <i class="fas fa-graduation-cap"></i>
+            Improve
+        `;
+        
+        // Insert into the metric header, after the score
+        const header = metricItem.querySelector('.metric-header');
+        header.appendChild(linkElement);
+    }
+    
+    getTrainingUrl(metricName) {
+        // Define training URLs for different metrics
+        const trainingUrls = {
+            'clarity': 'https://example.com/training/clarity',
+            'appropriateness': 'https://example.com/training/appropriateness', 
+            'originality': 'https://example.com/training/originality',
+            'objectivity': 'https://example.com/training/objectivity',
+            'complexity': 'https://example.com/training/complexity',
+            'context': 'https://example.com/training/context',
+            'rubric-agreement': 'https://example.com/training/rubric-agreement',
+            'rubric-formatting': 'https://example.com/training/rubric-formatting',
+            'objective-scoring': 'https://example.com/training/objective-scoring',
+            'grading-completeness': 'https://example.com/training/grading-completeness',
+            'target-difficulty': 'https://example.com/training/target-difficulty'
+        };
+        
+        return trainingUrls[metricName] || 'https://example.com/training/general';
     }
 }
 
