@@ -261,16 +261,16 @@ class TaskCreator {
                 const stepMetrics = this.getMetricsForStep(step);
                 const completedMetrics = stepMetrics.filter(metric => this.metricScores[metric] !== undefined);
                 
-                // Remove previous step score classes
-                navStep.classList.remove('step-score-excellent', 'step-score-good', 'step-score-poor');
+                // Remove previous score badge classes
+                scoreElement.classList.remove('score-badge-excellent', 'score-badge-good', 'score-badge-poor', 'score-badge-active', 'score-badge-empty');
                 
                 if (completedMetrics.length === 0) {
                     if (step === this.currentStep) {
                         scoreElement.textContent = 'Active';
-                        scoreElement.style.color = '#333333';
+                        scoreElement.classList.add('score-badge-active');
                     } else {
                         scoreElement.textContent = '-';
-                        scoreElement.style.color = 'var(--text-muted)';
+                        scoreElement.classList.add('score-badge-empty');
                     }
                 } else {
                     const avgScore = Math.round(
@@ -278,16 +278,13 @@ class TaskCreator {
                     );
                     scoreElement.textContent = `${avgScore}%`;
                     
-                    // Add color class to nav step based on score
+                    // Add color badge class based on score
                     if (avgScore > 85) {
-                        navStep.classList.add('step-score-excellent');
-                        scoreElement.style.color = '#28a745';
+                        scoreElement.classList.add('score-badge-excellent');
                     } else if (avgScore >= 70) {
-                        navStep.classList.add('step-score-good');
-                        scoreElement.style.color = '#ffc107';
+                        scoreElement.classList.add('score-badge-good');
                     } else {
-                        navStep.classList.add('step-score-poor');
-                        scoreElement.style.color = '#dc3545';
+                        scoreElement.classList.add('score-badge-poor');
                     }
                 }
             }
